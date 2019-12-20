@@ -18,8 +18,8 @@ import com.kiran.practice.hibernate.hibernate.util.ElapsedTimeCalculator;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ResultSetScrollabilityAndFetchSizeTest {
-	Logger logger = LoggerFactory.getLogger(StatementCachingTest.class);
+public class JdbcResultSetScrollabilityAndFetchSizeTest {
+	Logger logger = LoggerFactory.getLogger(JdbcResultSetScrollabilityAndFetchSizeTest.class);
 
 	@Autowired
 	private PostService service;
@@ -33,7 +33,7 @@ public class ResultSetScrollabilityAndFetchSizeTest {
 	}
 
 	@Test
-	public void testFetchSize() {
+	public void testPerformanceWithDifferentFetchSize() {
 		logger.info("Running testFetchSize with fetch size 4");
 		ElapsedTimeCalculator.start();
 		service.fetchRecordsWithFetchSize(4);
@@ -76,4 +76,52 @@ public class ResultSetScrollabilityAndFetchSizeTest {
 */
 		
 	}
+	
+	@Test
+	public void testPerformanceWithDifferentResultSetSize() {
+		logger.info("Running testPerformanceWithDifferentResultSetSize 1000");
+		ElapsedTimeCalculator.start();
+		service.fetchRowsWithMaxRows(1000);
+		ElapsedTimeCalculator.stop();
+		
+		
+		logger.info("Running testPerformanceWithDifferentResultSetSize 500");
+		ElapsedTimeCalculator.start();
+		service.fetchRowsWithMaxRows(500);
+		ElapsedTimeCalculator.stop();
+		
+		logger.info("Running testPerformanceWithDifferentResultSetSize 100");
+		ElapsedTimeCalculator.start();
+		service.fetchRowsWithMaxRows(100);
+		ElapsedTimeCalculator.stop();
+		
+		logger.info("Running testPerformanceWithDifferentResultSetSize 50");
+		ElapsedTimeCalculator.start();
+		service.fetchRowsWithMaxRows(50);
+		ElapsedTimeCalculator.stop();
+		
+		logger.info("Running testPerformanceWithDifferentResultSetSize 10");
+		ElapsedTimeCalculator.start();
+		service.fetchRowsWithMaxRows(10);
+		ElapsedTimeCalculator.stop();
+	}
+	
+	@Test
+	public void testPerformanceWithDifferentResultSetSizingMechanism() {
+		logger.info("Running test performance for all rows");
+		ElapsedTimeCalculator.start();
+		service.fetchAllRows();
+		ElapsedTimeCalculator.stop();
+		
+		logger.info("Running test performance for max rows 100");
+		ElapsedTimeCalculator.start();
+		service.fetchRowsWithMaxRows(100);
+		ElapsedTimeCalculator.stop();
+		
+		logger.info("Running test performance for query limit 100");
+		ElapsedTimeCalculator.start();
+		service.fetchRowsWithLimit(100);
+		ElapsedTimeCalculator.stop();
+	}
+	
 }

@@ -38,7 +38,7 @@ public class PostDao {
 	private DataSource dataSource;
 
 	private void createInitialData() {
-		for (int counter = 0; counter <= 1000; counter++) {
+		for (int counter = 0; counter <= 10000; counter++) {
 			entityManager.merge(new Post(counter, "Details : " + counter, counter + 1));
 			;
 		}
@@ -251,7 +251,7 @@ public class PostDao {
 				"jdbc:postgresql://localhost:5432/postgres?loggerLevel=TRACE&loggerFile=dbLog.log", props)) {
 			PreparedStatement statement = connection
 					.prepareStatement("SELECT POST_ID,TITLE,VERSION FROM PUBLIC.POST ORDER BY POST_ID");
-			statement.setFetchSize(size);//Set the fetch size here.
+			statement.setFetchSize(size);// Set the fetch size here.
 			ResultSet resultSet = null;
 			try {
 				resultSet = statement.executeQuery();
@@ -269,6 +269,138 @@ public class PostDao {
 			e.printStackTrace();
 		}
 
+	}
+
+	public void fetchRowsWithMaxRows(int maxRows) {
+
+		Properties props = new Properties();
+		props.setProperty("user", "postgres");
+		props.setProperty("password", "kiran");
+		props.setProperty("preparedStatementCacheQueries", "0");
+		props.setProperty("preparedStatementCacheSizeMiB", "0");
+
+		try (Connection connection = DriverManager.getConnection(
+				"jdbc:postgresql://localhost:5432/postgres?loggerLevel=TRACE&loggerFile=dbLog.log", props)) {
+			PreparedStatement statement = connection
+					.prepareStatement("SELECT POST_ID,TITLE,VERSION FROM PUBLIC.POST ORDER BY POST_ID");
+			statement.setMaxRows(maxRows);
+			ResultSet resultSet = null;
+			try {
+				resultSet = statement.executeQuery();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			while (resultSet.next()) {
+				int id = resultSet.getInt(1);
+				String details = resultSet.getString(2);
+				int version = resultSet.getInt(3);
+				logger.debug("id : " + id + " title :" + details + " version :" + version);
+			}
+			logger.info("Execution completed.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void fetchAllRows() {
+		Properties props = new Properties();
+		props.setProperty("user", "postgres");
+		props.setProperty("password", "kiran");
+		props.setProperty("preparedStatementCacheQueries", "0");
+		props.setProperty("preparedStatementCacheSizeMiB", "0");
+
+		try (Connection connection = DriverManager.getConnection(
+				"jdbc:postgresql://localhost:5432/postgres?loggerLevel=TRACE&loggerFile=dbLog.log", props)) {
+			connection.setAutoCommit(false);
+			PreparedStatement statement = connection
+					.prepareStatement("SELECT POST_ID,TITLE,VERSION FROM PUBLIC.POST ORDER BY POST_ID");
+			ResultSet resultSet = null;
+			try {
+				resultSet = statement.executeQuery();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			while (resultSet.next()) {
+				int id = resultSet.getInt(1);
+				String details = resultSet.getString(2);
+				int version = resultSet.getInt(3);
+				logger.debug("id : " + id + " title :" + details + " version :" + version);
+			}
+			logger.info("Execution completed.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void fetchRowsWithLimit(int limit) {
+
+		Properties props = new Properties();
+		props.setProperty("user", "postgres");
+		props.setProperty("password", "kiran");
+		props.setProperty("preparedStatementCacheQueries", "0");
+		props.setProperty("preparedStatementCacheSizeMiB", "0");
+
+		try (Connection connection = DriverManager.getConnection(
+				"jdbc:postgresql://localhost:5432/postgres?loggerLevel=TRACE&loggerFile=dbLog.log", props)) {
+			connection.setAutoCommit(false);
+			PreparedStatement statement = connection
+					.prepareStatement("SELECT POST_ID,TITLE,VERSION FROM PUBLIC.POST ORDER BY POST_ID LIMIT ?");
+			statement.setInt(1, limit);
+			ResultSet resultSet = null;
+			try {
+				resultSet = statement.executeQuery();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			while (resultSet.next()) {
+				int id = resultSet.getInt(1);
+				String details = resultSet.getString(2);
+				int version = resultSet.getInt(3);
+				logger.debug("id : " + id + " title :" + details + " version :" + version);
+			}
+			logger.info("Execution completed.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void fetchTransactionIsolationLevel() {
+
+
+		Properties props = new Properties();
+		props.setProperty("user", "postgres");
+		props.setProperty("password", "kiran");
+		props.setProperty("preparedStatementCacheQueries", "0");
+		props.setProperty("preparedStatementCacheSizeMiB", "0");
+
+		try (Connection connection = DriverManager.getConnection(
+				"jdbc:postgresql://localhost:5432/postgres?loggerLevel=TRACE&loggerFile=dbLog.log", props)) {
+			connection.setAutoCommit(false);
+			
+			PreparedStatement statement = connection
+					.prepareStatement("SELECT POST_ID,TITLE,VERSION FROM PUBLIC.POST ORDER BY POST_ID LIMIT ?");
+			ResultSet resultSet = null;
+			try {
+				statement.setInt(1, 2);
+				resultSet = statement.executeQuery();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			logger.info("Connection.TRANSACTION_NONE : {}",Connection.TRANSACTION_NONE);
+			logger.info("Connection.TRANSACTION_READ_COMMITTED : {}",Connection.TRANSACTION_READ_COMMITTED);
+			logger.info("Connection.TRANSACTION_READ_UNCOMMITTED : {}",Connection.TRANSACTION_READ_UNCOMMITTED);
+			logger.info("Connection.TRANSACTION_REPEATABLE_READ : {}",Connection.TRANSACTION_REPEATABLE_READ);
+			logger.info("Connection.TRANSACTION_SERIALIZABLE : {}",Connection.TRANSACTION_SERIALIZABLE);
+			logger.info("Transaction isolation level : "+connection.getMetaData().getDefaultTransactionIsolation());
+			logger.info("Execution completed.",resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	
 	}
 
 }

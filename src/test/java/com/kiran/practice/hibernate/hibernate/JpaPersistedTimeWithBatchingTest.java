@@ -15,9 +15,9 @@ import com.kiran.practice.hibernate.hibernate.util.ElapsedTimeCalculator;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class PersistedTimeWithBatchingTest {
+public class JpaPersistedTimeWithBatchingTest {
 
-	Logger logger = LoggerFactory.getLogger(PersistedTimeWithBatchingTest.class);
+	Logger logger = LoggerFactory.getLogger(JpaPersistedTimeWithBatchingTest.class);
 
 	@Autowired
 	private PostService service;

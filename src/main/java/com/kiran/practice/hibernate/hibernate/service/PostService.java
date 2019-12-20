@@ -59,4 +59,21 @@ public class PostService {
 	public void fetchRecordsWithFetchSize(int size) {
 		dao.fetchRecordsWithFetchSize(size);
 	}
+
+	public void fetchRowsWithMaxRows(int maxRows) {
+		dao.fetchRowsWithMaxRows(maxRows);
+		
+	}
+
+	public void fetchAllRows() {
+		dao.fetchAllRows();
+	}
+
+	public void fetchRowsWithLimit(int limit) {
+		dao.fetchRowsWithLimit(limit);
+	}
+
+	public void fetchTransactionIsolationLevel() {
+		dao.fetchTransactionIsolationLevel();
+	}
 }

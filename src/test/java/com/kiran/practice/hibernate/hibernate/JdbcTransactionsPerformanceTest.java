@@ -13,13 +13,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.kiran.practice.hibernate.hibernate.service.PostService;
-import com.kiran.practice.hibernate.hibernate.util.ElapsedTimeCalculator;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class StatementCachingTest {
-	Logger logger = LoggerFactory.getLogger(StatementCachingTest.class);
+public class JdbcTransactionsPerformanceTest {
+
+	Logger logger = LoggerFactory.getLogger(JdbcResultSetScrollabilityAndFetchSizeTest.class);
 
 	@Autowired
 	private PostService service;
@@ -33,18 +33,7 @@ public class StatementCachingTest {
 	}
 
 	@Test
-	public void test1FetchWithoutClientCache() {
-		logger.info("Running test1FetchWithoutClientCache");
-		ElapsedTimeCalculator.start();
-		service.fetchRecordsWithoutStatementCache();
-		ElapsedTimeCalculator.stop();
-	}
-	
-	@Test
-	public void test2FetchWithClientCache() {
-		logger.info("Running test2FetchWithClientCache");
-		ElapsedTimeCalculator.start();
-		service.fetchRecordsWithStatementCache();
-		ElapsedTimeCalculator.stop();
+	public void testTransactionIsolationLevel() {
+		service.fetchTransactionIsolationLevel();
 	}
 }
